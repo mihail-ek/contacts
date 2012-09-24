@@ -3,13 +3,13 @@ require 'csv'
 class Contacts
   class Mailru < Base
     LOGIN_URL = "https://auth.mail.ru/cgi-bin/auth"
-    ADDRESS_BOOK_URL = "http://win.mail.ru/cgi-bin/abexport/addressbook.csv"
+    ADDRESS_BOOK_URL = "https://e.mail.ru/cgi-bin/abexport/addressbook.csv"
 
     attr_accessor :cookies
 
     def real_connect
       username = login
-      
+
       postdata =  "Login=%s&Domain=%s&Password=%s" % [
         CGI.escape(username),
         CGI.escape(domain_param(username)),

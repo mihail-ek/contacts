@@ -143,8 +143,8 @@ class Contacts
         "Content-Type" => 'application/x-www-form-urlencoded'
       }
       http_header.reject!{|k, v| k == 'Accept-Encoding'} if skip_gzip?
-      resp, data = http.post(url.path, postdata, http_header)
-      data = uncompress(resp, data)
+      resp = http.post(url.path, postdata, http_header)
+      data = uncompress(resp, resp.body)
       cookies = parse_cookies(resp.response['set-cookie'], cookies)
       forward = resp.response['Location']
       forward ||= (data =~ /<meta.*?url='([^']+)'/ ? CGI.unescapeHTML($1) : nil)
@@ -157,13 +157,13 @@ class Contacts
     def get(url, cookies="", referer="")
       url = URI.parse(url)
       http = open_http(url)
-      resp, data = http.get("#{url.path}?#{url.query}",
+      resp = http.get("#{url.path}?#{url.query}",
         "User-Agent" => "Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en-US; rv:1.8.1) Gecko/20061010 Firefox/2.0",
         "Accept-Encoding" => "gzip",
         "Cookie" => cookies,
         "Referer" => referer
       )
-      data = uncompress(resp, data)
+      data = uncompress(resp, resp.body)
       cookies = parse_cookies(resp.response['set-cookie'], cookies)
       forward = resp.response['Location']
 	  if (not forward.nil?) && URI.parse(forward).host.nil?
